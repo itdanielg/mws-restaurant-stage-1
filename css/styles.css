@@ -41,6 +41,7 @@ article, aside, canvas, details, figcaption, figure, footer, header, hgroup, men
 #maincontent {
   background-color: #f3f3f3;
   min-height: 100%;
+  padding-top: 78px;
 }
 #footer {
   background-color: #444;
@@ -51,6 +52,13 @@ article, aside, canvas, details, figcaption, figure, footer, header, hgroup, men
   text-align: center;
   text-transform: uppercase;
   width: auto;
+}
+
+header {
+  position: fixed;
+  top: 0;
+  width: 100vw;
+  z-index: 1001;
 }
 /* ====================== Navigation ====================== */
 nav {
@@ -67,17 +75,18 @@ nav h1 {
 }
 nav h1 a {
   color: #fff;
-  font-size: 1.4rem;
+  font-size: 1.3rem;
   font-weight: 200;
   text-transform: uppercase;
 }
 #breadcrumb {
-    padding: 10px 0 16px 15px;
+    padding: 10px 0 10px 15px;
     list-style: none;
     background-color: #eee;
     font-size: 1.3rem;
     margin: 0;
     text-align: left;
+    line-height: 1rem;
 }
 
 /* Display list items side by side */
@@ -119,8 +128,12 @@ nav h1 a {
 /* ====================== Map ====================== */
 #map {
   height: 400px;
+  height: 100%;
   width: 100%;
   background-color: #ccc;
+}
+#map-container {
+  height: 265px;
 }
 /* ====================== Restaurant Filtering ====================== */
 .filter-options {
@@ -249,33 +262,24 @@ nav h1 a {
 }
 
 /* ====================== Restaurant Details ====================== */
-.inside header {
-  position: fixed;
-  top: 0;
-  width: 100vw;
-  z-index: 1001;
-}
 .inside #map-container {
   background: blue none repeat scroll 0 0;
-  height: 265px;
 }
 .inside #map {
   background-color: #ccc;
-  height: 100%;
-  width: 100%;
 }
 .inside #footer {
   bottom: 0;
   position: absolute;
 }
 .inside #maincontent {
-  padding-top: 129px;
+  padding-top: 116px;
   padding-bottom: 65px;
 }
 #restaurant-name {
   color: #f18200;
   font-family: Arial,sans-serif;
-  font-size: 1.4rem;
+  font-size: 1.3rem;
   font-weight: 200;
   letter-spacing: 0;
   margin: 15px 0;
@@ -311,7 +315,7 @@ nav h1 a {
 }
 #reviews-container h2 {
   color: #f58500;
-  font-size: 1.4rem;
+  font-size: 1.3rem;
   font-weight: 300;
   letter-spacing: -1px;
   margin: 15px 0;
