@@ -9,8 +9,7 @@ class DBHelper {
    */
   static get DATABASE_URL() {
     const port = 8000 // Change this to your server port
-    return 'data/restaurants.json'; //TODO: Change back to localhost after testing
-    //return `http://localhost:${port}/data/restaurants.json`;
+    return `http://localhost:${port}/data/restaurants.json`;
   }
 
   /**
@@ -151,8 +150,7 @@ class DBHelper {
    * Restaurant image URL.
    */
   static imageUrlForRestaurant(restaurant) {
-    //return (`/img/${restaurant.photograph}`);
-    return (`/mws-restaurant-stage-1/img/${restaurant.photograph}`); //TODO revert after using github pages to test layout
+    return (`/img/${restaurant.photograph}`);
   }
 
   /**
