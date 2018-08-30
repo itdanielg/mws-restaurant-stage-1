@@ -51,7 +51,6 @@ article, aside, canvas, details, figcaption, figure, footer, header, hgroup, men
   padding: 25px;
   text-align: center;
   text-transform: uppercase;
-  width: auto;
 }
 
 header {
@@ -267,10 +266,7 @@ nav h1 a {
 .inside #map {
   background-color: #ccc;
 }
-.inside #footer {
-  bottom: 0;
-  position: absolute;
-}
+
 .inside #maincontent {
   padding-top: 116px;
   padding-bottom: 65px;
