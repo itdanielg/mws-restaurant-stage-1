@@ -108,7 +108,8 @@ nav h1 a {
 }
 
 /* Add a color on mouse-over */
-#breadcrumb li a:hover {
+#breadcrumb li a:hover,
+#breadcrumb li a:focus {
     color: #01447e;
     text-decoration: underline;
 }
@@ -135,7 +136,8 @@ nav h1 a {
   height: 265px;
 }
 
-.leaflet-marker-icon:focus {
+.leaflet-marker-icon:focus,
+.leaflet-control-zoom a:focus {
   border: 2px solid #3397db;
 }
 
