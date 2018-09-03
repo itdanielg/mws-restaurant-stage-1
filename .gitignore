@@ -1,0 +1,5 @@
+**/node_modules
+**/images_src
+Gruntfile.js
+package.json
+package-lock.json
