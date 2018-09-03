@@ -24,6 +24,7 @@ a {
 	color: orange;
 	text-decoration: none;
 }
+
 a:hover, a:focus {
 	color: #3397db;
 	text-decoration: none;
@@ -133,6 +134,11 @@ nav h1 a {
 #map-container {
   height: 265px;
 }
+
+.leaflet-marker-icon:focus {
+  border: 2px solid #3397db;
+}
+
 /* ====================== Restaurant Filtering ====================== */
 .filter-options {
   width: 100%;
@@ -165,6 +171,10 @@ nav h1 a {
     width: 92%;
     margin: 10px 4%;
   }
+}
+
+.filter-options select:focus {
+  border: 3px solid purple;
 }
 
 /* ====================== Restaurant Listing ====================== */
@@ -227,7 +237,7 @@ nav h1 a {
 }
 
 #restaurants-list li a {
-  background-color: orange;
+  background-color: #f18200;
   border-bottom: 3px solid #eee;
   color: #fff;
   display: block;
@@ -240,6 +250,15 @@ nav h1 a {
   text-decoration: none;
   text-transform: uppercase;
   max-width: 250px;
+}
+
+#restaurants-list li a:hover,
+#restaurants-list li a:focus {
+  background: white;
+  color: #3397db;
+  border: 2px solid #3397db;
+  font-weight: 700;
+  text-decoration: underline;
 }
 
 @media screen and (min-width: 630px) {
