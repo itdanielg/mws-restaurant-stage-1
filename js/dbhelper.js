@@ -4,6 +4,21 @@
 class DBHelper {
 
   /**
+   * Register the service worker.
+   */
+  static registerServiceWorker() {
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js')
+      .then(function(registration) {
+        console.log('Success! Service Worker registered.  Registration scope is:', registration.scope);
+      })
+      .catch(function(error) {
+        console.log('Service Worker registration error:', error);
+      });
+    }
+  }
+
+  /**
    * Database URL.
    * Change this to restaurants.json file location on your server.
    */
