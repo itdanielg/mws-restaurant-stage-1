@@ -177,6 +177,12 @@ class DBHelper {
     img/${id}-645.jpg 645w, img/${id}-800.jpg 800w`);
   }
 
+  /**
+   * Restaurant image alt tag.
+   */
+  static restaurantImageAlt(restaurant) {
+    return `An image of ${restaurant.name} in ${restaurant.neighborhood}`;
+  }
 
   /**
    * Map marker for a restaurant.
