@@ -69,8 +69,12 @@ const cacheList = [
                   arr.forEach(r => {
                     keyValStore.put(r);
                   });
+                }).then(() => {
+                  return tx.complete;
+                }).catch(() => {
+                  return tx.abort();
                 });
-                return tx.complete;
+
               }).catch( error => {
                 console.log(error);
               });
