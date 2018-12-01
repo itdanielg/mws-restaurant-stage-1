@@ -10,6 +10,10 @@ document.addEventListener('DOMContentLoaded', (event) => {
   initMap();
 });
 
+document.forms['review-form'].addEventListener('submit', (event) => {
+  DBHelper.postReview(event);
+});
+
 /**
  * Initialize leaflet map
  */
@@ -35,6 +39,10 @@ initMap = () => {
       DBHelper.mapMarkerForRestaurant(self.restaurant, self.newMap);
     }
   });
+}
+
+addRestaurantIdToForm = (id) => {
+  document.getElementById('restaurant_id').setAttribute('value', id);
 }
 
 /* window.initMap = () => {
@@ -73,6 +81,7 @@ fetchRestaurantFromURL = (callback) => {
         return;
       }
       fillRestaurantHTML();
+      addRestaurantIdToForm(id);
       callback(null, restaurant)
     });
   }

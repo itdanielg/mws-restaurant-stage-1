@@ -50,6 +50,29 @@
     <!-- Beginning reviews -->
     <section id="reviews-container">
       <ul id="reviews-list"></ul>
+      <form id="review-form" action="http://localhost:1337/reviews/" method="post">
+        <label for="reviewerName">Name:</label>
+        <input id="reviewerName" type="text" name="name">
+
+
+        <legend>Choose a rating:</legend>
+        <input id="one-star" type="radio" name="rating" value="1">
+        <label for="one-star">One star</label><br>
+        <input id="two-stars" type="radio" name="rating" value="2">
+        <label for="two-stars">Two stars</label><br>
+        <input id="three-stars" type="radio" name="rating" value="3">
+        <label for="three-stars">Three stars</label><br>
+        <input id="four-stars" type="radio" name="rating" value="4">
+        <label for="four-stars">Four stars</label><br>
+        <input id="five-stars" type="radio" name="rating" value="5">
+        <label for="five-stars">Five stars</label>
+
+
+        <label for="comments">Enter your review</label><br>
+        <textarea id="comments" name="comments"></textarea>
+        <input type="hidden" name="restaurant_id" id="restaurant_id" />
+        <input type="submit">
+      </form>
     </section>
     <!-- End reviews -->
   </main>

@@ -26,6 +26,23 @@ class DBHelper {
     const port = 1337; // Change this to your server port
     return `http://localhost:${port}/restaurants`;
   }
+  /**
+   * Post a review
+   */
+  static postReview(event) {
+    event.preventDefault();
+    let formD = new FormData(event.currentTarget);
+    let entries = formD.entries();
+
+    //TODO create reviews URL constant and use that
+    fetch(event.currentTarget.action, {
+      method: 'POST',
+      body: formD
+    })
+    .then(response => response.json())
+    .catch(error => console.error('Error:', error))
+    .then(response => console.log('Success:', JSON.stringify(response)));
+  }
 
   /**
    * Fetch all restaurants.
