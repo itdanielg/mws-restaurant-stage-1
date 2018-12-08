@@ -19,12 +19,28 @@ class DBHelper {
   }
 
   /**
+   * Reviews URL.
+   *
+   */
+  static get REVIEWS_URL() {
+    return `${DBHelper.DATABASE_URL}/reviews/`;
+  }
+
+   /**
+   * Restaurants URL.
+   *
+   */
+  static get RESTAURANTS_URL() {
+    return `${DBHelper.DATABASE_URL}/restaurants/`;
+  }
+
+  /**
    * Database URL.
    * Change this to restaurants.json file location on your server.
    */
   static get DATABASE_URL() {
     const port = 1337; // Change this to your server port
-    return `http://localhost:${port}/restaurants`;
+    return `http://localhost:${port}`;
   }
   /**
    * Post a review
@@ -35,7 +51,7 @@ class DBHelper {
     let entries = formD.entries();
 
     //TODO create reviews URL constant and use that
-    fetch(event.currentTarget.action, {
+    fetch(DBHelper.REVIEWS_URL, {
       method: 'POST',
       body: formD
     })
@@ -47,9 +63,23 @@ class DBHelper {
   /**
    * Fetch all restaurants.
    */
+  static fetchReviews(restaurant_id, callback) {
+
+    //TODO create reviews URL constant and use that
+    fetch(`${DBHelper.REVIEWS_URL}?restaurant_id=${restaurant_id}`, {
+      method: 'GET'
+    })
+    .then(response => response.json())
+    .catch(error => console.error('Error:', error))
+    .then(response => callback(response));
+  }
+
+  /**
+   * Fetch all restaurants.
+   */
   static fetchRestaurants(callback) {
     let xhr = new XMLHttpRequest();
-    xhr.open('GET', DBHelper.DATABASE_URL);
+    xhr.open('GET', DBHelper.RESTAURANTS_URL);
     xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     xhr.onload = () => {
       if (xhr.status === 200) { // Got a success response from server!

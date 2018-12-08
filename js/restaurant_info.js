@@ -37,6 +37,7 @@ initMap = () => {
       }).addTo(newMap);
       fillBreadcrumb();
       DBHelper.mapMarkerForRestaurant(self.restaurant, self.newMap);
+      DBHelper.fetchReviews(self.restaurant.id, fillReviewsHTML);
     }
   });
 }
@@ -44,22 +45,6 @@ initMap = () => {
 addRestaurantIdToForm = (id) => {
   document.getElementById('restaurant_id').setAttribute('value', id);
 }
-
-/* window.initMap = () => {
-  fetchRestaurantFromURL((error, restaurant) => {
-    if (error) { // Got an error!
-      console.error(error);
-    } else {
-      self.map = new google.maps.Map(document.getElementById('map'), {
-        zoom: 16,
-        center: restaurant.latlng,
-        scrollwheel: false
-      });
-      fillBreadcrumb();
-      DBHelper.mapMarkerForRestaurant(self.restaurant, self.map);
-    }
-  });
-} */
 
 /**
  * Get current restaurant from page URL.
@@ -111,8 +96,6 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   if (restaurant.operating_hours) {
     fillRestaurantHoursHTML();
   }
-  // fill reviews
-  fillReviewsHTML();
 }
 
 /**
@@ -170,7 +153,7 @@ createReviewHTML = (review) => {
   headingbar.appendChild(name);
 
   const date = document.createElement('span');
-  date.innerHTML = review.date;
+  date.innerHTML = formatDate(review.createdAt);
   date.className = 'review-date';
   headingbar.appendChild(date);
 
@@ -186,6 +169,24 @@ createReviewHTML = (review) => {
   li.appendChild(comments);
 
   return li;
+}
+
+/**
+ * Format created date
+ */
+function formatDate(date) {
+  const monthNames = [
+    "January", "February", "March",
+    "April", "May", "June", "July",
+    "August", "September", "October",
+    "November", "December"
+  ];
+  const dateObj = new Date(date);
+  const day = dateObj.getDate();
+  const monthIndex = dateObj.getMonth();
+  const year = dateObj.getFullYear();
+
+  return `${monthNames[monthIndex]} ${day}, ${year}`;
 }
 
 /**
