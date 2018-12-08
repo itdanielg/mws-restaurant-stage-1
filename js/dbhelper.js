@@ -1,7 +1,15 @@
+const dbPromise = idb.open('restaurantReview', 1, upgradeDB => {
+  let keyValStore = upgradeDB.createObjectStore('restaurants', {
+    keyPath: 'id'
+  });
+});
+
 /**
  * Common database helper functions.
  */
 class DBHelper {
+
+
 
   /**
    * Register the service worker.
@@ -65,14 +73,53 @@ class DBHelper {
    /**
    * Favorite a restaurant
    */
-  static toggleFavorite(restaurantID, isFavorite) {
+  static async toggleFavorite(restaurantID, isFavorite) {
+    //update saved data first
+    await this.updateRestaurantData(restaurantID, {'is_favorite' : isFavorite});
+
     fetch(`${DBHelper.RESTAURANTS_URL}${restaurantID}/?is_favorite=${isFavorite}`, {
-      method: 'PUT',
+      method: 'PUT'
     })
     .then(response => response.json())
     .catch(error => console.error('Error:', error))
     .then(response => console.log('Success:', JSON.stringify(response)));
   }
+
+  /**
+   * Update saved restaurant data
+   */
+  static updateRestaurantData(restaurantID, updateAttrs) {
+
+      dbPromise.then((db) => {
+        let trns = db.transaction('restaurants', 'readwrite');
+        let keyValStore = trns.objectStore('restaurants');
+        //check if we have saved data
+        keyValStore.getAll().then(function(items) {
+          console.log(items);
+        });
+
+        keyValStore.getAll().then(function(items) {
+          if (!items) {
+            //nothing found
+            return;
+          }
+          const restrData = items;
+          const IDnum = parseInt(restaurantID, 0);
+          let restrToUpdate = restrData.filter(r => r.id == IDnum);
+          if(!restrToUpdate[0]) {
+            //return if restaurant not in saved data
+            return;
+          }
+          Object.keys(updateAttrs).forEach( a => { restrToUpdate[0][a] = updateAttrs[a]; })
+          dbPromise.then((db) => {
+            const tx = db.transaction('restaurants', 'readwrite');
+            tx.objectStore('restaurants').put({id: IDnum, data: restrData});
+            return tx.complete;
+          })
+        })
+      });
+  }
+
 
   /**
    * Fetch all restaurants.

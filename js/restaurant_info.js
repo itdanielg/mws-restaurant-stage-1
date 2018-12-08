@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
  * Catch form submit event for reviews
  */
 document.forms['review-form'].addEventListener('submit', (event) => {
+  //TODO add validation
   DBHelper.postReview(event);
 });
 
@@ -53,13 +54,16 @@ initMap = () => {
           'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
         id: 'mapbox.streets'
       }).addTo(newMap);
+
       fillBreadcrumb();
       DBHelper.mapMarkerForRestaurant(self.restaurant, self.newMap);
       DBHelper.fetchReviews(self.restaurant.id, fillReviewsHTML);
     }
   });
 }
-
+/**
+ * Add restaurant ID to element values
+ */
 addRestaurantIdToPage = (id) => {
   document.getElementById('restaurant_id').setAttribute('value', id);
   document.getElementById('favorite').setAttribute('value', id);
@@ -111,6 +115,17 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   const cuisine = document.getElementById('restaurant-cuisine');
   cuisine.innerHTML = restaurant.cuisine_type;
 
+  const fav = document.getElementById('favorite');
+
+  if (restaurant.is_favorite === 'true') {
+    if (!fav.checked) {
+      fav.setAttribute('checked', 'checked');
+    }
+  } else {
+    if (fav.checked) {
+      fav.removeAttribute('checked');
+    }
+  }
   // fill operating hours
   if (restaurant.operating_hours) {
     fillRestaurantHoursHTML();
