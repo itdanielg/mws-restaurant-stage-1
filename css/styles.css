@@ -60,6 +60,14 @@ header {
   width: 100vw;
   z-index: 1001;
 }
+
+.hidden {
+  display: none;
+}
+
+.error-message {
+  color: red;
+}
 /* ====================== Navigation ====================== */
 h1 {
   width: 100%;
@@ -344,6 +352,15 @@ header h1 a {
   justify-content: space-between;
   background: #09090a;
   padding: 1rem;
+}
+
+#review-form input, #review-form legend {
+  padding: 5px 0;
+}
+
+#review-form .comments-title {
+  display: block;
+  padding-top: 10px;
 }
 
 #reviews-list {

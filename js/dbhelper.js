@@ -60,7 +60,6 @@ class DBHelper {
    * Post a review
    */
   static postReview(event) {
-    event.preventDefault();
     let formD = new FormData(event.currentTarget);
     let formObj = {};
 

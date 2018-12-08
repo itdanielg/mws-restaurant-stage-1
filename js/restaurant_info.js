@@ -16,7 +16,28 @@ document.addEventListener('DOMContentLoaded', (event) => {
  */
 document.forms['review-form'].addEventListener('submit', (event) => {
   //TODO add validation
-  DBHelper.postReview(event);
+  event.preventDefault();
+  let ratingSelected = false;
+  let errorDiv = event.target.querySelector('.error-message');
+  if(!errorDiv.classList.contains('hidden')) {
+    errorDiv.classList.add('hidden');
+  }
+
+  event.target.querySelectorAll('[name=rating]').forEach(radio => {
+    if(radio.checked) {
+      ratingSelected = true;
+    }
+  });
+
+  if(event.target.querySelector('#comments').value.length > 0 && event.target.querySelector('#reviewerName').value.length > 0 && ratingSelected) {
+    DBHelper.postReview(event);
+    event.target.reset();
+  } else {
+    if(errorDiv.classList.contains('hidden')) {
+      errorDiv.classList.remove('hidden');
+    }
+    return false;
+  }
 });
 
 /**
