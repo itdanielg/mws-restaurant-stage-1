@@ -140,7 +140,7 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
 
   const fav = document.getElementById('favorite');
 
-  if (restaurant.is_favorite === 'true') {
+  if (restaurant.is_favorite === true) {
     if (!fav.checked) {
       fav.setAttribute('checked', 'checked');
     }
