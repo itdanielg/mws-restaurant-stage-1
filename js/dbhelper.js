@@ -93,9 +93,12 @@ class DBHelper {
 
       keyValStore.put(
         {
+          name: review.name,
+          rating: review.rating,
+          comments: review.comments,
+          restaurant_id: review.restaurant_id,
           id: Date.now(),
-          restaurant_id : review.restaurant_id,
-          data: review
+          createdAt: Date.now()
         }
       )
       return trns.complete;
@@ -180,6 +183,7 @@ class DBHelper {
               });
           }).catch(error => {
             console.log(error);
+            window.alert('Could not connect. Updates will be sent when back online.')
             return;
           });
         });
@@ -230,7 +234,7 @@ class DBHelper {
           Object.keys(updateAttrs).forEach( a => { restrToUpdate[0] [a] = updateAttrs[a]; })
           dbPromise.then((db) => {
             const tx = db.transaction('restaurants', 'readwrite');
-            tx.objectStore('restaurants').put({id: IDnum, data: restrData});
+            tx.objectStore('restaurants').put(restrToUpdate[0]);
             return tx.complete;
           });
         })

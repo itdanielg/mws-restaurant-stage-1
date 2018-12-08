@@ -31,6 +31,7 @@ document.forms['review-form'].addEventListener('submit', (event) => {
 
   if(event.target.querySelector('#comments').value.length > 0 && event.target.querySelector('#reviewerName').value.length > 0 && ratingSelected) {
     DBHelper.postReview(event);
+    DBHelper.fetchReviews(self.restaurant.id, fillReviewsHTML);
     event.target.reset();
   } else {
     if(errorDiv.classList.contains('hidden')) {
@@ -179,9 +180,12 @@ fillRestaurantHoursHTML = (operatingHours = self.restaurant.operating_hours) => 
  */
 fillReviewsHTML = (reviews = self.restaurant.reviews) => {
   const container = document.getElementById('reviews-container');
-  const title = document.createElement('h3');
-  title.innerHTML = 'Reviews';
-  container.appendChild(title);
+  if(document.getElementsByClassName('reviews-title').length < 1){
+    const title = document.createElement('h3');
+    title.innerHTML = 'Reviews';
+    title.className = 'reviews-title';
+    container.appendChild(title);
+  }
 
   if (!reviews) {
     const noReviews = document.createElement('p');

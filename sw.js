@@ -4,6 +4,10 @@ let dbPromise = idb.open('restaurantReview', 1, upgradeDB => {
   let keyValStore = upgradeDB.createObjectStore('restaurants', {
     keyPath: 'id'
   });
+
+  let keyValStoreReviews = upgradeDB.createObjectStore('reviews', {
+    keyPath: 'id'
+  });
 });
 
 const cacheList = [
@@ -38,7 +42,7 @@ const cacheList = [
         }
 
         const getNetworkOrDBResponse = async (request) => {
-          if (event.request.headers.get('content-type') && event.request.headers.get('content-type').includes('application/json')){
+          if (request.url.indexOf('restaurants') > -1 && request.method === 'GET'){
             //check if restaurant data available
             //load from db if available
             const dbResponse = await dbPromise.then(db => {
@@ -58,12 +62,52 @@ const cacheList = [
             }
           }
 
-          return fetch(event.request).then(networkResponse => {
-            if (event.request.headers.get('content-type') && event.request.headers.get('content-type').includes('application/json')){
+          if (request.url.indexOf('reviews') > -1 && request.method === 'GET'){
+            //check if review data available
+            //load from db if available
+            const dbResponse = await dbPromise.then(db => {
+              let tx = db.transaction('reviews', 'readonly');
+              let keyValStore = tx.objectStore('reviews');
+              return keyValStore.getAll().then(items => {
+                if (items && items.length) {
+                  return new Response(JSON.stringify(items));
+                }
+                else {
+                  return null;
+                }
+              });
+            });
+            if (dbResponse) {
+              return dbResponse;
+            }
+          }
 
+          return fetch(event.request).then(networkResponse => {
+            if (request.url.indexOf('restaurants') > -1 && request.method === 'GET'){
+              //save restaurant response to db
               dbPromise.then(function(db){
                 let tx = db.transaction('restaurants', 'readwrite');
                 let keyValStore = tx.objectStore('restaurants');
+
+                networkResponse.clone().json().then(arr => {
+                  arr.forEach(r => {
+                    keyValStore.put(r);
+                  });
+                }).then(() => {
+                  return tx.complete;
+                }).catch(() => {
+                  return tx.abort();
+                });
+
+              }).catch( error => {
+                console.log(error);
+              });
+
+            } else if (request.url.indexOf('reviews') > -1 && request.method === 'GET') {
+              //save reviews response to db
+              dbPromise.then(function(db){
+                let tx = db.transaction('reviews', 'readwrite');
+                let keyValStore = tx.objectStore('reviews');
 
                 networkResponse.clone().json().then(arr => {
                   arr.forEach(r => {
