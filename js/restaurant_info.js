@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 /**
  * Catch form submit event for reviews
  */
-document.forms['review-form'].addEventListener('submit', (event) => {
+document.forms['review-form'].addEventListener('submit', async (event) => {
   //TODO add validation
   event.preventDefault();
   let ratingSelected = false;
@@ -30,7 +30,7 @@ document.forms['review-form'].addEventListener('submit', (event) => {
   });
 
   if(event.target.querySelector('#comments').value.length > 0 && event.target.querySelector('#reviewerName').value.length > 0 && ratingSelected) {
-    DBHelper.postReview(event);
+    await DBHelper.postReview(event);
     DBHelper.fetchReviews(self.restaurant.id, fillReviewsHTML);
     event.target.reset();
   } else {

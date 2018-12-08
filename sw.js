@@ -56,6 +56,7 @@ const cacheList = [
                   return null;
                 }
               });
+              tx.complete;
             });
             if (dbResponse) {
               return dbResponse;
@@ -76,6 +77,7 @@ const cacheList = [
                   return null;
                 }
               });
+              tx.complete;
             });
             if (dbResponse) {
               return dbResponse;

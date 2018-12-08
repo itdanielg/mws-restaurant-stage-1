@@ -69,18 +69,6 @@ class DBHelper {
 
     this.updateReviewsData(formObj);
     this.updatePendingRequestData(DBHelper.REVIEWS_URL, 'POST', formObj);
-    /*
-    fetch(DBHelper.REVIEWS_URL, {
-      method: 'POST',
-      body: formD
-    })
-    .then(response => response.json())
-    .catch(error => {
-      console.error('Error:', error);
-      window.alert('Not connected');
-    })
-    .then(response => console.log('Success:', JSON.stringify(response)));
-    */
   }
 
   /**
@@ -119,6 +107,7 @@ class DBHelper {
           type: type,
           body: body
       });
+      trns.complete;
     })
       .catch(error => {console.log(error);})
       .then(DBHelper.sendNextPendingRequest());
@@ -238,6 +227,7 @@ class DBHelper {
             return tx.complete;
           });
         })
+        trns.complete;
       });
   }
 
