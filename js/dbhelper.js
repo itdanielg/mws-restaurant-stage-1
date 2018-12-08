@@ -2,14 +2,20 @@ const dbPromise = idb.open('restaurantReview', 1, upgradeDB => {
   let keyValStore = upgradeDB.createObjectStore('restaurants', {
     keyPath: 'id'
   });
+
+  let reviewsKVS = upgradeDB.createObjectStore('reviews', {
+    keyPath: 'id'
+  });
+
+  let pendingKVS = upgradeDB.createObjectStore('pending', {
+    keyPath: 'id'
+  });
 });
 
 /**
  * Common database helper functions.
  */
 class DBHelper {
-
-
 
   /**
    * Register the service worker.
@@ -56,8 +62,15 @@ class DBHelper {
   static postReview(event) {
     event.preventDefault();
     let formD = new FormData(event.currentTarget);
-    let entries = formD.entries();
+    let formObj = {};
 
+    formD.forEach((value, key) => {
+      formObj[key] = value;
+    });
+
+    this.updateReviewsData(formObj);
+    this.updatePendingRequestData(DBHelper.REVIEWS_URL, 'POST', formObj);
+    /*
     fetch(DBHelper.REVIEWS_URL, {
       method: 'POST',
       body: formD
@@ -68,7 +81,112 @@ class DBHelper {
       window.alert('Not connected');
     })
     .then(response => console.log('Success:', JSON.stringify(response)));
+    */
   }
+
+  /**
+   * Update saved reviews data
+   */
+  static updateReviewsData(review) {
+    dbPromise.then((db) => {
+      let trns = db.transaction('reviews', 'readwrite');
+      let keyValStore = trns.objectStore('reviews');
+
+      keyValStore.put(
+        {
+          id: Date.now(),
+          restaurant_id : review.restaurant_id,
+          data: review
+        }
+      )
+      return trns.complete;
+    });
+  }
+
+   /**
+   * add pending requests to database
+   */
+  static updatePendingRequestData (url, type, body) {
+    dbPromise.then((db) => {
+      let trns = db.transaction('pending', 'readwrite');
+      let keyValStore = trns.objectStore('pending');
+
+      keyValStore.put({
+          id: Date.now(),
+          url: url,
+          type: type,
+          body: body
+      });
+    })
+      .catch(error => {console.log(error);})
+      .then(DBHelper.sendNextPendingRequest());
+  }
+
+  /**
+   * attempt to send all pending requests
+   */
+  static sendNextPendingRequest() {
+    DBHelper.attemptPendingSend(DBHelper.sendNextPendingRequest);
+  }
+
+  /**
+   * send pending requests until failure
+   */
+  static attemptPendingSend(callback) {
+    let url, type, body;
+
+    dbPromise.then(db => {
+      if (!db.objectStoreNames.length) { //check if we have object stores in the db
+        db.close();
+        return;
+      }
+
+
+      let trns = db.transaction('pending', 'readwrite');
+
+      trns.objectStore('pending').openCursor()
+        .then(cursor => {
+            if(!cursor) {
+              return;
+            }
+          let va = cursor.value;
+          url = cursor.value.url;
+          type = cursor.value.type;
+          body = cursor.value.body;
+
+          if ((type === 'POST' && !body) || (!url || !type)) {//check if record has necessary parts delete if no good
+            cursor.delete().then(callback());
+            return;
+          }
+
+          let props = {
+            method: type,
+            body: JSON.stringify(body),
+          }
+
+          fetch(url, props).then(response => {
+            if(!response.ok && !response.redirected) { //check for failure
+              return;
+            }
+          }).then((response) => {
+              console.log('Success:', JSON.stringify('review posted'));
+              const deleteTrans = db.transaction('pending', 'readwrite');
+              deleteTrans.objectStore('pending')
+              .openCursor()
+              .then(cursor => {
+                cursor.delete()
+                .then(() => {
+                  callback();//get the next one
+                })
+              });
+          }).catch(error => {
+            console.log(error);
+            return;
+          });
+        });
+    });
+  }
+
 
    /**
    * Favorite a restaurant
@@ -110,15 +228,16 @@ class DBHelper {
             //return if restaurant not in saved data
             return;
           }
-          Object.keys(updateAttrs).forEach( a => { restrToUpdate[0][a] = updateAttrs[a]; })
+          Object.keys(updateAttrs).forEach( a => { restrToUpdate[0] [a] = updateAttrs[a]; })
           dbPromise.then((db) => {
             const tx = db.transaction('restaurants', 'readwrite');
             tx.objectStore('restaurants').put({id: IDnum, data: restrData});
             return tx.complete;
-          })
+          });
         })
       });
   }
+
 
 
   /**

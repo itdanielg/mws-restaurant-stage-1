@@ -8,6 +8,7 @@ DBHelper.registerServiceWorker();
  */
 document.addEventListener('DOMContentLoaded', (event) => {
   initMap();
+  DBHelper.sendNextPendingRequest();
 });
 
 /**
