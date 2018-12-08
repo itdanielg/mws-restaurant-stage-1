@@ -10,8 +10,26 @@ document.addEventListener('DOMContentLoaded', (event) => {
   initMap();
 });
 
+/**
+ * Catch form submit event for reviews
+ */
 document.forms['review-form'].addEventListener('submit', (event) => {
   DBHelper.postReview(event);
+});
+
+/**
+ * Handle favorite restaurant checkbox events
+ */
+document.getElementById('favorite').addEventListener('click', (event) => {
+  //determine if checking or unchecking and call toggle
+    let isFavorite;
+    if(event.target.checked) {
+        // Checkbox is checked..
+        isFavorite = true;
+    } else {
+      isFavorite = false;
+    }
+    DBHelper.toggleFavorite(event.target.value, isFavorite);
 });
 
 /**
@@ -42,8 +60,9 @@ initMap = () => {
   });
 }
 
-addRestaurantIdToForm = (id) => {
+addRestaurantIdToPage = (id) => {
   document.getElementById('restaurant_id').setAttribute('value', id);
+  document.getElementById('favorite').setAttribute('value', id);
 }
 
 /**
@@ -66,7 +85,7 @@ fetchRestaurantFromURL = (callback) => {
         return;
       }
       fillRestaurantHTML();
-      addRestaurantIdToForm(id);
+      addRestaurantIdToPage(id);
       callback(null, restaurant)
     });
   }

@@ -50,10 +50,24 @@ class DBHelper {
     let formD = new FormData(event.currentTarget);
     let entries = formD.entries();
 
-    //TODO create reviews URL constant and use that
     fetch(DBHelper.REVIEWS_URL, {
       method: 'POST',
       body: formD
+    })
+    .then(response => response.json())
+    .catch(error => {
+      console.error('Error:', error);
+      window.alert('Not connected');
+    })
+    .then(response => console.log('Success:', JSON.stringify(response)));
+  }
+
+   /**
+   * Favorite a restaurant
+   */
+  static toggleFavorite(restaurantID, isFavorite) {
+    fetch(`${DBHelper.RESTAURANTS_URL}${restaurantID}/?is_favorite=${isFavorite}`, {
+      method: 'PUT',
     })
     .then(response => response.json())
     .catch(error => console.error('Error:', error))
@@ -245,16 +259,6 @@ class DBHelper {
       marker.addTo(newMap);
     return marker;
   }
-  /* static mapMarkerForRestaurant(restaurant, map) {
-    const marker = new google.maps.Marker({
-      position: restaurant.latlng,
-      title: restaurant.name,
-      url: DBHelper.urlForRestaurant(restaurant),
-      map: map,
-      animation: google.maps.Animation.DROP}
-    );
-    return marker;
-  } */
 
 }
 
